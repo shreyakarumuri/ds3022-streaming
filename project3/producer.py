@@ -17,65 +17,46 @@ from quixstreams import Application
 from tornado.websocket import websocket_connect
 
 BROKER = "127.0.0.1:19092"
-TOPIC = "quakes"
-FDSN_URL = "https://www.seismicportal.eu/fdsnws/event/1/query"
-WSS_URL = "wss://www.seismicportal.eu/standing_order/websocket"
+TOPIC = "bluesky_messages"
+FDSN_URL = None
+WSS_URL = "wss://jetstream2.us-east.bsky.network/subscribe?wantedCollections=app.bsky.feed.post"
 
 
 def send(producer, message):
-    """One Kafka record per message. Key = the event id, so every
-    version of the same earthquake goes to the same partition, in order."""
-    unid = message["data"]["properties"]["unid"]
-    producer.produce(topic=TOPIC, key=unid, value=json.dumps(message))
-    return unid
+    """One Kafka record per Bluesky event. Key = the event id, so every
+    version of the same account goes to the same partition, in order."""
+    key = message["data"].get("did")
+    if key is None:
+        logging.warning("No did: sent without a key")
+        return None
+    producer.produce(topic=TOPIC, key=key, value=json.dumps(message))
+    return key
 
 
-def history(producer, days):
-    """PULL: ask the catalogue for one day at a time (far below the 20,000 limit)."""
-    today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-    total = 0
-    for back in range(days - 1, -1, -1):  # the last N days, today included
-        start = today - timedelta(days=back)
-        end = start + timedelta(days=1)
-        r = requests.get(
-            FDSN_URL,
-            params={
-                "start": start.strftime("%Y-%m-%dT%H:%M:%S"),
-                "end": end.strftime("%Y-%m-%dT%H:%M:%S"),
-                "format": "json",
-                "limit": 20000,
-                "orderby": "time-asc",
-            },
-            timeout=60,
-        )
-        if r.status_code == 204:  # no events that day
-            continue
-        r.raise_for_status()
-        features = r.json()["features"]
-        for feature in features:
-            send(producer, {"action": "history", "data": feature})
-        total += len(features)
-        logging.info("%s  %4d events   total %d", start.date(), len(features), total)
-        time.sleep(1)  # be polite to a free public service
-    logging.info("History done: %d events sent to %s", total, TOPIC)
-
-
+SUBSCRIBE = {"type": "subscribe",
+             "product_ids": ["BTC-USD", "ETH-USD", "SOL-USD",
+                             "XRP-USD", "DOGE-USD", "ADA-USD"],
+             "channels": ["matches"]}   # Bluesky Jetstream: SUBSCRIBE = None
+ 
 async def live(producer):
-    """PUSH: keep one connection open; EMSC sends each new or updated event."""
-    ws = await websocket_connect(WSS_URL, ping_interval=15)
-    logging.info("Connected. Waiting for earthquakes (often about one a minute)...")
+    """PUSH over a WebSocket, with a reconnect loop."""
     while True:
-        text = await ws.read_message()
-        if text is None:
-            logging.warning("The server closed the connection")
-            break
         try:
-            message = json.loads(text)
-            unid = send(producer, message)
-            p = message["data"]["properties"]
-            logging.info("%-7s %s  M%s  %s", message.get("action"), unid, p.get("mag"), p.get("flynn_region"))
-        except (ValueError, KeyError, TypeError) as e:
-            logging.warning("Skipped a message I could not read: %r", e)
+            ws = await websocket_connect(WSS_URL, ping_interval=15)
+            if SUBSCRIBE:  # Coinbase closes the connection after 5 s without it
+                await ws.write_message(json.dumps(SUBSCRIBE))
+            while True:
+                text = await ws.read_message()
+                if text is None:
+                    break  # the server closed the connection
+                try:
+                    send(producer, {"action": "live", "data": json.loads(text)})
+                except (ValueError, KeyError, TypeError) as e:
+                    logging.warning("Skipped a message: %r", e)
+        except Exception as e:
+            logging.warning("Connection failed: %r", e)
+        logging.info("Reconnecting in 5 s")
+        await asyncio.sleep(5)
 
 
 def main():
