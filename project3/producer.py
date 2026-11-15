@@ -20,12 +20,13 @@ BROKER = "127.0.0.1:19092"
 TOPIC = "bluesky_messages"
 FDSN_URL = None
 WSS_URL = "wss://jetstream2.us-east.bsky.network/subscribe?wantedCollections=app.bsky.feed.post"
+SUBSCRIBE = None
 
 
 def send(producer, message):
     """One Kafka record per Bluesky event. Key = the did, so every
     event of the same account goes to the same partition, in order."""
-    key = message.get("did")
+    key = message["data"].get("did")
     if key is None:
         logging.warning("Message missing DID; sending without a key")
         return None
@@ -46,13 +47,13 @@ async def live(producer):
             ws = await websocket_connect(WSS_URL, ping_interval=15)
             if SUBSCRIBE:  # Coinbase closes the connection after 5 s without it
                 await ws.write_message(json.dumps(SUBSCRIBE))
+            logging.info("Connected to Bluesky Jetstream")
             while True:
                 text = await ws.read_message()
                 if text is None:
                     break  # the server closed the connection
                 try:
-                    message = json.loads(text)
-                    send(producer, message)
+                    send(producer, {"action": "live","data": json.loads(text)})
                     count += 1
 
                     if count % 1000 == 0:
@@ -62,6 +63,7 @@ async def live(producer):
                     logging.warning("Skipped a message: %r", e)
         except Exception as e:
             logging.warning("Connection failed: %r", e)
+
         logging.info("Reconnecting in 5 s")
         await asyncio.sleep(5)
 
