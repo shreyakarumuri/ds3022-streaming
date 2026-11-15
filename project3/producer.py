@@ -25,9 +25,9 @@ WSS_URL = "wss://jetstream2.us-east.bsky.network/subscribe?wantedCollections=app
 def send(producer, message):
     """One Kafka record per Bluesky event. Key = the did, so every
     event of the same account goes to the same partition, in order."""
-    key = message["data"].get("did")
+    key = message.get("did")
     if key is None:
-        logging.warning("No did: sent without a key")
+        logging.warning("Message missing DID; sending without a key")
         return None
     producer.produce(topic=TOPIC, key=key, value=json.dumps(message))
     return key
@@ -40,6 +40,7 @@ SUBSCRIBE = {"type": "subscribe",
  
 async def live(producer):
     """PUSH over a WebSocket, with a reconnect loop."""
+    count = 0
     while True:
         try:
             ws = await websocket_connect(WSS_URL, ping_interval=15)
@@ -50,7 +51,13 @@ async def live(producer):
                 if text is None:
                     break  # the server closed the connection
                 try:
-                    send(producer, {"action": "live", "data": json.loads(text)})
+                    message = json.loads(text)
+                    send(producer, message)
+                    count += 1
+
+                    if count % 1000 == 0:
+                        logging.info("Sent %d messages", count)
+
                 except (ValueError, KeyError, TypeError) as e:
                     logging.warning("Skipped a message: %r", e)
         except Exception as e:
