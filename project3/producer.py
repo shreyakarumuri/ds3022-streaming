@@ -23,8 +23,8 @@ WSS_URL = "wss://jetstream2.us-east.bsky.network/subscribe?wantedCollections=app
 
 
 def send(producer, message):
-    """One Kafka record per Bluesky event. Key = the event id, so every
-    version of the same account goes to the same partition, in order."""
+    """One Kafka record per Bluesky event. Key = the did, so every
+    event of the same account goes to the same partition, in order."""
     key = message["data"].get("did")
     if key is None:
         logging.warning("No did: sent without a key")
@@ -63,9 +63,6 @@ def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "live"
     app = Application(broker_address=BROKER, loglevel="WARNING")
     with app.get_producer() as producer:
-        if mode == "history":
-            history(producer, int(sys.argv[2]) if len(sys.argv) > 2 else 7)
-        else:
             asyncio.run(live(producer))
 
 

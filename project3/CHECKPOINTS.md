@@ -5,11 +5,11 @@ Tick them off in your own copy. Add an entry to **PROGRESS.md** (done / next / b
 ## Session 1 · Thu 05 Nov
 
 ### Checkpoint A: source and topic design
-- [ ] `git remote -v` shows **your** `ds3022-streaming` repository; the kit is unzipped into `project3/` and pushed
-- [ ] Probes run for at least two sources; one source chosen
-- [ ] `SOURCE_CARD.md` complete with **measured** numbers (rate, volume plan, key, duplicate identity, draft question)
-- [ ] Self-check in section 7 of the card: every box ticked
-- [ ] Repository private with the instructor added as collaborator (or kept public, your choice)
+- [x] `git remote -v` shows **your** `ds3022-streaming` repository; the kit is unzipped into `project3/` and pushed
+- [x] Probes run for at least two sources; one source chosen
+- [x] `SOURCE_CARD.md` complete with **measured** numbers (rate, volume plan, key, duplicate identity, draft question)
+- [x] Self-check in section 7 of the card: every box ticked
+- [x] Repository private with the instructor added as collaborator (or kept public, your choice)
 
 ### Checkpoint B: producer
 - [ ] Class scripts copied into `project3/` and committed before you change them
