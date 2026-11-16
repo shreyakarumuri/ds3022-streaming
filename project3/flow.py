@@ -83,21 +83,22 @@ def chart():
     plt.figure(figsize=(10, 7))
     bars = plt.barh(languages, percentages)
 
-    plt.title("Reply Percentage by Language (Top 10 by Post Volume)")
-    plt.xlabel("Posts that are replies (%)")
+    plt.title("Reply Rates Differ Across Languages")
+    plt.xlabel("Proportion of posts that are replies (%)")
     plt.ylabel("Language")
 
-    for bar, count in zip(bars, counts):
+    for bar, percentage, count in zip(bars, percentages, counts):
         plt.text(
-            bar.get_width() + 0.3,
-            bar.get_y() + bar.get_height() / 2,
-            f"n={count:,}",
-            va="center",
-            fontsize=9
-        )
+        bar.get_width() + 0.3,
+        bar.get_y() + bar.get_height() / 2,
+        f"{percentage:.1f}%  (n={count:,})",
+        va="center",
+        fontsize=9
+    )
 
+    plt.xlim(0, max(percentages) * 1.25)
     plt.tight_layout()
-    plt.savefig(CHART, dpi=150)
+    plt.savefig(CHART, dpi=150, bbox_inches="tight")    
     plt.close()
     return CHART
 

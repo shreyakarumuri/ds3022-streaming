@@ -62,9 +62,11 @@ _(replace: one clear paragraph. Your research question, what the data shows, one
 
 ## Plot / Visualization
 
-_(replace: at least one chart, saved in charts/ and shown here. Give it a title and labelled axes with units.)_
 
-![TODO chart title](charts/TODO.png)
+
+![Reply Rates Differ Across Languages](charts/reply_percentage_by_language.png)
+
+Bluesky posts collected in the collection period November 12, 2026, 13:49 UTC – November 16, 2026, 11:54 UTC. through the Kafka streaming pipeline and stored in Parquet files. Each bar represents the percentage of posts in that language classified as replies. Labels show the total number of posts included for each language. The top 10 (highest percentage of replies) are shown and languages with fewer than 100 observations are exluded.
 
 ## Reflection
 
