@@ -21,14 +21,14 @@ Tick them off in your own copy. Add an entry to **PROGRESS.md** (done / next / b
 ## Session 2 · Mon 09 Nov
 
 ### Checkpoint C: lander writes raw Parquet
-- [ ] `to_row()` keeps partition, offset, key, `action`, `landed_at`, `raw` + your own columns
-- [ ] Batches of 1000 records or 60 s, `.tmp` then rename, offsets stored only after the file exists
-- [ ] Row count in `data/raw/` matches the messages in the topic
+- [x] `to_row()` keeps partition, offset, key, `action`, `landed_at`, `raw` + your own columns
+- [x] Batches of 1000 records or 60 s, `.tmp` then rename, offsets stored only after the file exists
+- [x] Row count in `data/raw/` matches the messages in the topic
 
 ### Checkpoint D: chaos round (steps in [CHAOS_CARDS.md](CHAOS_CARDS.md))
-- [ ] Card D1 (crash between file and offsets) with numbers before and after
-- [ ] Card D2 (poison message) with numbers before and after
-- [ ] At least one of D3, D4, D5
+- [x] Card D1 (crash between file and offsets) with numbers before and after
+- [x] Card D2 (poison message) with numbers before and after
+- [x] At least one of D3, D4, D5
 - [ ] "Chaos round" table in README.md
 
 ## Session 3 · Thu 12 Nov
