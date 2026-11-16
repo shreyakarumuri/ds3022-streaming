@@ -2,7 +2,7 @@
 import sys
 import duckdb
 
-USAGE = "Give your id column(s), e.g.  python four_numbers.py product_id,trade_id"
+USAGE = "Give your id column(s), e.g.  python four_numbers.py did,rkey"
 HELP = "Check: run it from project3, at least one file landed, id names as in your SCHEMA."
 sys.excepthook = lambda kind, err, tb: print(f"{err}\n{HELP}", file=sys.stderr)
 IDS = sys.argv[1].split(",") if len(sys.argv) > 1 else sys.exit(USAGE)
