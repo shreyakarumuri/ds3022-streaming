@@ -62,11 +62,11 @@ Paste one message from the probe (shorten long text fields):
 ## 4. Topic design
 - Topic name:                          (created with `-p 3 -r 3` **before** the producer runs: bluesky_messages
 - Kafka key: did or Decentralized Identifier 
-- Why this key (ordering, spread across partitions): It unqiuely identifies a BlueSky account, making it a logical partition for BlueSky events. 
+- Why this key (ordering, spread across partitions): It uniquely identifies a BlueSky account, making it a logical partition for BlueSky events. 
 ## 5. Duplicates
-- What makes two records **the same Kafka record**? (landed twice by the lander): Having the same topic, key, and value (the same stream, account and message)
-- What makes two records **the same thing** (the same trade, post, aircraft position)?  Having the same,key, and rkey (the same account, and event within that account).
-- If the same thing can arrive in several versions, which one do I keep? Keep the latest valid version of the record based on event ordering. If comparing equivalent versions, keep the most complete information. Preserve meaningful updates and deletions. Just because two records refer to the same post does not mean one needs to be deleted; they may be different actions like uploading and deleteing.
+- What makes two records **the same Kafka record**? (landed twice by the lander): Having the same topic, partition, and offset (the same stream, account and message). This identifies the same message in the Kafka stream, even if the lander writes it to Parquet more than once.
+- What makes two records **the same thing** (the same trade, post, aircraft position)?  Having the same DID, and rkey (the same account, and event within that account).
+- If the same thing can arrive in several versions, which one do I keep? When a post has multiple versions or operations, I keep the latest one based on event time (time_us), using the Kafka offset to break ties. This preserves meaningful updates and deletions rather than treating every event as an independent post. Preserve meaningful updates and deletions. Just because two records refer to the same post does not mean one needs to be deleted; they may be different actions like uploading and deleting.
 ## 6. Research question (draft)
 - One question I could answer with time windows, a comparison, an anomaly or a join:
  How does the distribution of languages in Bluesky posts vary over the observation period? 
