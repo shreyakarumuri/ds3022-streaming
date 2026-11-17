@@ -108,6 +108,7 @@ This processes the Parquet files in `data/raw/` and generates `charts/reply_perc
 From the `project3` directory:
 
 ```bash
+python kit/make_sample.py
 python flow.py data/sample
 ```
 
