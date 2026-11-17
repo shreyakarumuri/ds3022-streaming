@@ -29,27 +29,27 @@ Tick them off in your own copy. Add an entry to **PROGRESS.md** (done / next / b
 - [x] Card D1 (crash between file and offsets) with numbers before and after
 - [x] Card D2 (poison message) with numbers before and after
 - [x] At least one of D3, D4, D5
-- [ ] "Chaos round" table in README.md
+- [x] "Chaos round" table in README.md
 
 ## Session 3 · Thu 12 Nov
 
 ### Checkpoint E: Prefect flow
-- [ ] **50,000 raw records landed** (hard target at the start of the session)
-- [ ] Tasks: load raw → stage → entities → marts → charts
-- [ ] The four numbers logged; two runs in a row give the same numbers
-- [ ] `python kit/make_sample.py`, then `python flow.py data/sample` runs
-- [ ] Screenshots in `docs/`: flow log with the four numbers, Prefect dashboard
+- [x] **50,000 raw records landed** (hard target at the start of the session)
+- [x] Tasks: load raw → stage → entities → marts → charts
+- [x] The four numbers logged; two runs in a row give the same numbers
+- [x] `python kit/make_sample.py`, then `python flow.py data/sample` runs
+- [x] Screenshots in `docs/`: flow log with the four numbers, Prefect dashboard
 
 ### Checkpoint F (part 1): insight
-- [ ] Research question, query, first chart (insight sprint)
-- [ ] Chart read correctly by a classmate without your help (chart swap), or fixed until it is
+- [x] Research question, query, first chart (insight sprint)
+- [x] Chart read correctly by a classmate without your help (chart swap), or fixed until it is
 
 ## Session 4 · Mon 16 Nov
 
 ### Checkpoint F (part 2): README and submission
-- [ ] README complete: every heading, no `TODO` or `(replace` left
+- [x] README complete: every heading, no `TODO` or `(replace` left
 - [ ] README peer test done; the one place your reader got stuck is fixed
-- [ ] `python kit/check_project.py` prints `READY`
-- [ ] `RUBRIC.md` Self column filled; everything committed and pushed
-- [ ] `git tag dp3-submit` and `git push origin dp3-submit`, **last**
+- [x] `python kit/check_project.py` prints `READY`
+- [x] `RUBRIC.md` Self column filled; everything committed and pushed
+- [x] `git tag dp3-submit` and `git push origin dp3-submit`, **last**
 - [ ] Repository link + rubric on Canvas by **23:59**
